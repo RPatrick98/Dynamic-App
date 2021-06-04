@@ -8,15 +8,25 @@
 
     $character = getCharacter($character_id);
 
-    if(!$character) {
-        header('location: index.php');
+  
+    $locations = getAllCity();
+
+
+    if($_SERVER["REQUEST_METHOD"] == "POST") {
+        $data = array(
+            "id" => $_GET["id"],
+            "location" => $_POST["location"]
+        );
+        updateCity($data);
+        header("location: character.php?id=$character_id");
     }
 
-    $locations = getAllCity();
+    
 
     include("resources/header.php");
 
 ?>
+
 
 <header><h1><?=$character["name"]?></h1>
     <a class="backbutton" href="index.php"><i class="fas fa-long-arrow-alt-left"></i> Terug</a></header>
@@ -40,18 +50,18 @@
             <p>
                 <?=nl2br($character["bio"])?>
             </p>
-            <form>
+            <form method="POST">
               <label><b>Huidige Locatie:</b></label>
-              <select>
+              <select name="location" id="location">
                 <?php 
                     foreach ($locations as $location ) {
                 ?>
-                <option value="<?=$location["name"]?>"><?=$location["name"]?></option>
+                <option value="<?=$location["id"]?>" <?php if($location["id"] == $character["location"]) {echo "selected"; } ?>><?=$location["name"]?></option>
                 <?php 
                 }
                 ?>
               </select>
-              <input type="submit" value="update">
+              <input type="submit" name="submit" value="update">
             </form>
         </div>
         <div style="clear: both"></div>
